@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wiki - Build & Install - WarcraftXL</title>
+  <meta name="description" content="How to build and install WarcraftXL: requirements, getting the source, building with the helper script or raw CMake, installing into the client, and writing your first module." />
+  <meta name="theme-color" content="#0d0f12" />
+  <link rel="icon" href="assets/img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { gold: "#d6a258", goldbright: "#ecc079", golddeep: "#a87a3d", bronze: "#a87a3d", ink: "#0d0f12" },
+        fontFamily: { display: ["Space Grotesk", "Inter", "sans-serif"], body: ["Inter", "system-ui", "sans-serif"], mono: ["JetBrains Mono", "monospace"] },
+        maxWidth: { content: "1180px" }
+      } }
+    };
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/grayscale-dark.min.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body class="font-body">
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav fixed top-0 inset-x-0 z-50">
+    <div class="max-w-content mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/img/logo.png" alt="" class="h-8 w-8" />
+        <span class="font-display font-semibold text-[1.05rem] tracking-tight text-strong">WarcraftXL</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="docs.html" class="nav-link active">Wiki</a>
+        <a href="catalog.html" class="nav-link">Catalog</a>
+        <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="btn btn-ghost !py-2 !px-4">GitHub</a>
+      </div>
+      <button id="nav-burger" class="md:hidden text-muted" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    </div>
+    <div id="nav-mobile" class="hidden md:hidden border-t border-[var(--line)] px-5 py-4 flex-col gap-3 bg-[var(--surface)]">
+      <a href="index.html" class="nav-link block py-1">Home</a>
+      <a href="docs.html" class="nav-link active block py-1">Wiki</a>
+      <a href="catalog.html" class="nav-link block py-1">Catalog</a>
+      <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link block py-1">GitHub</a>
+    </div>
+  </nav>
+
+  <main class="pt-16">
+    <!-- header -->
+    <header class="max-w-content mx-auto px-5 pt-14 pb-8">
+      <p class="eyebrow mb-3">Wiki</p>
+      <h1 class="heading-gold text-4xl md:text-5xl font-bold mb-4">Build &amp; Install</h1>
+      <p class="text-muted text-md max-w-2xl">From a fresh checkout to a running build, then loading it into the client and writing your first module.</p>
+    </header>
+
+    <div class="max-w-content mx-auto px-5 pb-24 grid lg:grid-cols-[240px_1fr] gap-10">
+      <!-- TOC -->
+      <aside class="hidden lg:block">
+        <div class="sticky top-24">
+          <p class="eyebrow mb-4">On this page</p>
+          <nav class="space-y-0.5">
+            <div class="toc-group">
+              <p class="toc-group-label">Getting started</p>
+              <div class="border-l border-[var(--line)]">
+                <a href="#overview" class="toc-link">Overview</a>
+                <a href="#requirements" class="toc-link">Requirements</a>
+                <a href="#get-source" class="toc-link">Get the source</a>
+              </div>
+            </div>
+            <div class="toc-group">
+              <p class="toc-group-label">Build</p>
+              <div class="border-l border-[var(--line)]">
+                <a href="#build" class="toc-link">Build</a>
+                <a href="#build-script" class="toc-link lvl-3">Helper script</a>
+                <a href="#build-cmake" class="toc-link lvl-3">Raw CMake</a>
+                <a href="#flags" class="toc-link lvl-3">Build options</a>
+                <a href="#install" class="toc-link">Install into the client</a>
+              </div>
+            </div>
+            <div class="toc-group">
+              <p class="toc-group-label">Modules</p>
+              <div class="border-l border-[var(--line)]">
+                <a href="#first-module" class="toc-link">Your first module</a>
+                <a href="#host" class="toc-link">The asset host</a>
+              </div>
+            </div>
+            <div class="toc-group">
+              <p class="toc-group-label">Help</p>
+              <div class="border-l border-[var(--line)]">
+                <a href="#logs" class="toc-link">Logs &amp; troubleshooting</a>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- CONTENT -->
+      <article class="prose-wxl min-w-0">
+
+        <section id="overview">
+          <h2>Overview</h2>
+          <p>
+            WarcraftXL is the framework that loads into the running game. The thing you build is
+            <code>WarcraftXL.dll</code>: it boots inside the client, brings up the hook engine, and raises a set of
+            events that modules react to. Modules live under <code>scripts/</code> and compile into that same DLL, so
+            building the framework builds your modules with it.
+          </p>
+          <div class="callout">
+            <p class="!mt-0">
+              <strong>Before you start.</strong> The target is a 32-bit process, so everything builds
+              <strong>Win32</strong>. You also need a 3.3.5a client that you legally own - WarcraftXL ships no game files.
+            </p>
+          </div>
+        </section>
+
+        <section id="requirements">
+          <h2>Requirements</h2>
+          <ul>
+            <li><strong>Windows</strong> with a Win32 C++17 toolchain - <strong>Visual Studio 2022</strong> is recommended.</li>
+            <li><strong>CMake</strong> 3.25 or newer.</li>
+            <li><strong>PowerShell</strong> 5.1 or newer (it ships with Windows) if you use the helper script.</li>
+            <li>A legally-obtained <strong>3.3.5a (build 12340)</strong> client to deploy into and test against.</li>
+          </ul>
+        </section>
+
+        <section id="get-source">
+          <h2>Get the source</h2>
+          <p>Clone the framework repository. Modules are separate repositories you drop into <code>scripts/</code>.</p>
+<pre><code class="language-bash text-sm">git clone https://github.com/WarcraftXL/wxl-core.git
+cd wxl-core</code></pre>
+          <p>To add a module, clone it under <code>scripts/</code> - it is picked up on the next build:</p>
+<pre><code class="language-bash text-sm">git clone https://github.com/WarcraftXL/wxl-unit-outline.git scripts/wxl-unit-outline</code></pre>
+        </section>
+
+        <section id="build">
+          <h2>Build</h2>
+          <p>There are two ways to build: the helper script (recommended, it also deploys) or raw CMake.</p>
+
+          <h3 id="build-script">Helper script</h3>
+          <p>
+            <code>build.ps1</code> configures, builds <strong>Release</strong>, and copies the result into your client.
+            On the first run, point it at your client folder once - the path is remembered afterwards.
+          </p>
+<pre><code class="language-powershell text-sm"># first run - tell it where the client is
+.\build.ps1 -ClientPath "D:\Path\To\3.3.5a"
+
+# from then on, just
+.\build.ps1</code></pre>
+          <p>The build output is <code>WarcraftXL.dll</code> (with the <code>d3d9.dll</code> proxy alongside it), deployed into the client folder.</p>
+
+          <h3 id="build-cmake">Raw CMake</h3>
+          <p>If you would rather drive CMake yourself:</p>
+<pre><code class="language-bash text-sm">cmake -B build
+cmake --build build --config Release --target WarcraftXL</code></pre>
+          <p>Vendored dependencies build with the project, so there is nothing else to fetch.</p>
+
+          <h3 id="flags">Build options</h3>
+          <p>The helper script takes a few switches:</p>
+          <div class="panel framed overflow-x-auto my-4">
+            <table class="w-full text-left text-sm">
+              <thead class="text-gold-bright font-display">
+                <tr class="border-b border-[var(--line)]">
+                  <th class="py-3 px-4">Switch</th><th class="py-3 px-4">What it does</th>
+                </tr>
+              </thead>
+              <tbody class="text-muted">
+                <tr class="border-b border-[var(--line)]"><td class="py-3 px-4 font-mono text-gold">-ClientPath</td><td class="py-3 px-4">Client folder to deploy into. Needed once, then cached.</td></tr>
+                <tr class="border-b border-[var(--line)]"><td class="py-3 px-4 font-mono text-gold">-Clean</td><td class="py-3 px-4">Wipe the build directory first for a from-scratch build.</td></tr>
+                <tr class="border-b border-[var(--line)]"><td class="py-3 px-4 font-mono text-gold">-AutoPatch</td><td class="py-3 px-4">Prepare the client's executable to load the framework. Idempotent, and it backs up the original first.</td></tr>
+                <tr><td class="py-3 px-4 font-mono text-gold">-BuildHost</td><td class="py-3 px-4">Also build the companion asset host.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="install">
+          <h2>Install into the client</h2>
+          <p>
+            If you build with the helper script, the files are already in place. To set it up by hand, put
+            <code>WarcraftXL.dll</code> and the <code>d3d9.dll</code> proxy next to <code>Wow.exe</code>, then run the
+            one-time patch so the client loads the framework on launch:
+          </p>
+<pre><code class="language-powershell text-sm">.\build.ps1 -AutoPatch</code></pre>
+          <p>Launch the game. On bootstrap the framework writes a startup log - check it to confirm the modules came up.</p>
+          <div class="callout">
+            <p class="!mt-0">
+              <strong>Touching a client binary is on you.</strong> Work on a <strong>copy</strong>, keep an untouched
+              backup, and only point this at a client and server you are permitted to modify and connect to.
+            </p>
+          </div>
+        </section>
+
+        <section id="first-module">
+          <h2>Your first module</h2>
+          <p>
+            A module is a class that subscribes to engine events in its constructor and reacts in the handlers.
+            A file-scope instance registers itself when the DLL loads.
+          </p>
+<pre><code class="language-cpp text-sm">#include "events/EventScript.hpp"
+
+class HelloModule final : public wxl::events::EventScript {
+public:
+    HelloModule() {
+        on&lt;&amp;HelloModule::OnEndScene&gt;(wxl::events::Event::OnEndScene);
+    }
+
+    void OnEndScene(const wxl::events::EndSceneArgs&amp; a) {
+        // runs every frame - draw an overlay, read the world, edit it...
+    }
+};
+
+// self-registers at load
+HelloModule g_helloModule;</code></pre>
+          <p>
+            Drop the file under <code>scripts/your-module/</code>, rebuild, and it is live. From the handler you reach the
+            rest of the game through the typed <code>wxl::game</code> bindings - never a raw address.
+          </p>
+        </section>
+
+        <section id="host">
+          <h2>The asset host</h2>
+          <p>
+            Some setups run a companion process, the asset host, that serves the client's files from outside the game.
+            It is optional and off the critical path for most modules. Build it by adding <code>-BuildHost</code> to the
+            helper script.
+          </p>
+<pre><code class="language-powershell text-sm">.\build.ps1 -BuildHost</code></pre>
+        </section>
+
+        <section id="logs">
+          <h2>Logs &amp; troubleshooting</h2>
+          <ul>
+            <li><strong>Nothing happens on launch.</strong> Confirm <code>WarcraftXL.dll</code> and the <code>d3d9.dll</code> proxy sit next to <code>Wow.exe</code>, and that the patch step ran.</li>
+            <li><strong>Check the startup log.</strong> The framework writes one on bootstrap; it lists the modules that registered.</li>
+            <li><strong>Build is the wrong architecture.</strong> The client is 32-bit - make sure you configured a <strong>Win32</strong> toolchain, not x64.</li>
+          </ul>
+          <p>Still stuck? Open an issue on the <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener">GitHub organization</a>.</p>
+        </section>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-[var(--line)] bg-[var(--bg-2)]">
+    <div class="max-w-content mx-auto px-5 py-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="assets/img/logo.png" alt="" class="h-9 w-9" />
+          <div>
+            <p class="font-display font-semibold text-strong">WarcraftXL</p>
+            <p class="text-sm text-muted">Warcraft eXtension Layer</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="docs.html" class="nav-link">Wiki</a>
+          <a href="catalog.html" class="nav-link">Catalog</a>
+          <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        </div>
+      </div>
+      <div class="mt-10 pt-8 border-t border-[var(--line)] text-sm text-muted space-y-3 max-w-3xl">
+        <p><strong class="text-strong">WarcraftXL is an interoperability project.</strong> It distributes no Blizzard code and no game assets, and runs only against a client you supply and own, reading that client's own files at runtime. Reverse-engineering is limited to what is necessary for interoperability.</p>
+        <p>World of Warcraft and Wrath of the Lich King are trademarks of Blizzard Entertainment. This project is not affiliated with or endorsed by Blizzard.</p>
+        <p>Released under the GNU General Public License v3.0. &copy; <span id="year">2026</span> WarcraftXL.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/powershell.min.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

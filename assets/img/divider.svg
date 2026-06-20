@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="34" viewBox="0 0 760 34" fill="none" role="img" aria-label="section divider">
+  <defs>
+    <linearGradient id="wfade" x1="0" y1="0" x2="760" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#caae70" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#caae70" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#caae70" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- fading rules left + right -->
+  <rect x="40" y="16.4" width="302" height="1.2" fill="url(#wfade)"/>
+  <rect x="418" y="16.4" width="302" height="1.2" fill="url(#wfade)"/>
+
+  <!-- central hollow diamond (thin ring) - the hood point of the wraith mark -->
+  <path fill="#caae70" fill-rule="evenodd"
+        d="M380 5 L393 17 L380 29 L367 17 Z M380 9 L389 17 L380 25 L371 17 Z"/>
+
+  <!-- delicate chevron ticks flanking the diamond -->
+  <path d="M351 12.5 L356.5 17 L351 21.5" stroke="#caae70" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M409 12.5 L403.5 17 L409 21.5" stroke="#caae70" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

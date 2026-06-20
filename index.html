@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WarcraftXL - A modding framework for the World of Warcraft 3.3.5a client</title>
+  <meta name="description" content="WarcraftXL is a modding framework for the World of Warcraft 3.3.5a client. It loads into the running game and gives mods a clean, typed way to talk to the engine." />
+  <meta name="theme-color" content="#0d0f12" />
+
+  <meta property="og:title" content="WarcraftXL" />
+  <meta property="og:description" content="A modding framework for the World of Warcraft 3.3.5a client." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/img/logo.png" />
+
+  <link rel="icon" href="assets/img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { gold: "#d6a258", goldbright: "#ecc079", golddeep: "#a87a3d", bronze: "#a87a3d", ink: "#0d0f12" },
+          fontFamily: { display: ["Space Grotesk", "Inter", "sans-serif"], body: ["Inter", "system-ui", "sans-serif"], mono: ["JetBrains Mono", "monospace"] },
+          maxWidth: { content: "1120px" }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/grayscale-dark.min.css" />
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body class="font-body">
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav fixed top-0 inset-x-0 z-50">
+    <div class="max-w-content mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2.5">
+        <img src="assets/img/logo.png" alt="" class="h-8 w-8" />
+        <span class="font-display font-semibold text-[1.2rem] tracking-tight text-strong">WarcraftXL</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="docs.html" class="nav-link">Wiki</a>
+        <a href="catalog.html" class="nav-link">Catalog</a>
+        <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="btn btn-ghost !py-2 !px-3.5">GitHub</a>
+      </div>
+      <button id="nav-burger" class="md:hidden text-muted" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    </div>
+    <div id="nav-mobile" class="hidden md:hidden border-t border-[var(--line)] px-5 py-4 flex-col gap-3 bg-[var(--surface)]">
+      <a href="index.html" class="nav-link active block py-1">Home</a>
+      <a href="docs.html" class="nav-link block py-1">Wiki</a>
+      <a href="catalog.html" class="nav-link block py-1">Catalog</a>
+      <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link block py-1">GitHub</a>
+    </div>
+  </nav>
+
+  <main class="pt-16">
+
+    <!-- ===== HERO ===== -->
+    <header class="relative overflow-hidden border-b border-[var(--line)]">
+      <div class="grid-bg" aria-hidden="true"></div>
+      <div class="max-w-content mx-auto px-5 py-20 md:py-24 relative z-10">
+        <div class="grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <p class="eyebrow mb-5">Warcraft eXtension Layer</p>
+            <h1 class="heading-gold text-[2.5rem] md:text-6xl font-bold leading-[1.04] mb-6">
+              Mod the 3.3.5a<br />client, cleanly.
+            </h1>
+            <p class="text-md text-muted max-w-xl mb-8">
+              Loads into the running World of Warcraft client and gives mods a typed way to talk to the
+              engine - the same idea as SKSE or RED4ext.
+            </p>
+            <div class="flex flex-wrap gap-3">
+              <a href="docs.html" class="btn btn-gold">Read the Wiki</a>
+              <a href="catalog.html" class="btn btn-ghost">Browse Modules</a>
+            </div>
+            <p class="mt-7 text-sm text-muted">Free, and always will be. Open source under GPLv3.</p>
+          </div>
+
+          <!-- code is the product: lead with it -->
+          <div class="panel overflow-hidden">
+            <div class="code-head">
+              <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+              <span class="ml-1">MyModule.cpp</span>
+              <span class="code-tag">C++</span>
+            </div>
+<pre class="!border-0 !rounded-none !m-0 text-sm"><code class="language-cpp">class MyModule final : public wxl::events::EventScript {
+public:
+    MyModule() {
+        on&lt;&amp;MyModule::OnEndScene&gt;(wxl::events::Event::OnEndScene);
+    }
+    void OnEndScene(const wxl::events::EndSceneArgs&amp; a) {
+        // draw, read the world, edit it...
+    }
+};
+
+// file-scope instance self-registers at load
+MyModule g_myModule;</code></pre>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== INTRO + PRINCIPLE ===== -->
+    <section class="border-b border-[var(--line)] reveal">
+      <div class="max-w-content mx-auto px-5 py-20 grid md:grid-cols-[1fr_1.3fr] gap-12 md:gap-16">
+        <h2 class="heading-gold text-3xl md:text-4xl font-bold leading-tight">A small core,<br />plus your modules</h2>
+        <div class="text-md text-muted space-y-5 max-w-2xl">
+          <p>
+            <code>WarcraftXL.dll</code> boots inside the client, brings up the hook engine, and raises events.
+            A module subscribes to those events and uses the core's typed bindings to read and drive the game.
+          </p>
+          <p class="border-l-2 border-[var(--accent-deep)] pl-5 text-[var(--text)]">
+            Needed everywhere and always the same? It belongs in the core. A
+            <em class="text-gold not-italic font-semibold">feature</em> - a decision, an effect, an editor - is a module. Small reusable core, free modules.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PILLARS ===== -->
+    <section class="border-b border-[var(--line)] reveal">
+      <div class="max-w-content mx-auto px-5 py-20">
+        <div class="mb-12 max-w-xl">
+          <h2 class="heading-gold text-3xl md:text-4xl font-bold">Four pillars</h2>
+          <p class="text-muted mt-3">So a module never touches a raw address itself.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-px bg-[var(--line)] border border-[var(--line)] rounded-[var(--radius)] overflow-hidden">
+          <div class="bg-[var(--surface)] panel-hover p-8">
+            <span class="font-mono text-xs text-bronze tracking-wider">internal</span>
+            <h3 class="font-display text-xl text-strong font-semibold mt-2 mb-2">Offsets</h3>
+            <p class="text-muted">Curated client addresses and struct layouts. Internal - modules never touch these directly.</p>
+          </div>
+          <div class="bg-[var(--surface)] panel-hover p-8">
+            <span class="font-mono text-xs text-bronze tracking-wider">typed</span>
+            <h3 class="font-display text-xl text-strong font-semibold mt-2 mb-2">Bindings</h3>
+            <p class="text-muted">Typed, zero-overhead calls into engine functions, with an enumerable catalog of signatures.</p>
+          </div>
+          <div class="bg-[var(--surface)] panel-hover p-8">
+            <span class="font-mono text-xs text-bronze tracking-wider">event bus</span>
+            <h3 class="font-display text-xl text-strong font-semibold mt-2 mb-2">Events</h3>
+            <p class="text-muted">A lightweight event bus. Subclass <code>EventScript</code> and bind methods to engine events.</p>
+          </div>
+          <div class="bg-[var(--surface)] panel-hover p-8">
+            <span class="font-mono text-xs text-bronze tracking-wider">formats</span>
+            <h3 class="font-display text-xl text-strong font-semibold mt-2 mb-2">Assets</h3>
+            <p class="text-muted">In-memory contracts for the client's file formats - structured data, not byte soup.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MODULE MODEL ===== -->
+    <section class="border-b border-[var(--line)] reveal">
+      <div class="max-w-content mx-auto px-5 py-20 grid lg:grid-cols-2 gap-14 items-center">
+        <div>
+          <h2 class="heading-gold text-3xl md:text-4xl font-bold mb-6">Bind, then react</h2>
+          <p class="text-muted text-md mb-5">
+            Subscribe to engine events in the constructor, react in the handlers. A file-scope
+            instance self-registers when the DLL loads.
+          </p>
+          <p class="text-muted text-md">Drop it in, rebuild, and it is live - no separate injector, no patched data files.</p>
+        </div>
+        <div class="panel overflow-hidden">
+          <div class="code-head">
+            <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+            <span class="ml-1">MyModule.cpp</span>
+            <span class="code-tag">C++</span>
+          </div>
+<pre class="!border-0 !rounded-none !m-0 text-sm"><code class="language-cpp">class MyModule final : public wxl::events::EventScript {
+public:
+    MyModule() {
+        on&lt;&amp;MyModule::OnEndScene&gt;(wxl::events::Event::OnEndScene);
+    }
+    void OnEndScene(const wxl::events::EndSceneArgs&amp; a) {
+        // draw, read the world, edit it...
+    }
+};
+
+// file-scope instance self-registers at load
+MyModule g_myModule;</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== EXAMPLES ===== -->
+    <section class="border-b border-[var(--line)] reveal">
+      <div class="max-w-content mx-auto px-5 py-20">
+        <div class="mb-10 max-w-xl">
+          <h2 class="heading-gold text-3xl md:text-4xl font-bold">Example modules</h2>
+          <p class="text-muted mt-3">Proof and starting points both. If an in-client map editor is the "hello world", imagine the rest.</p>
+        </div>
+
+        <ul class="border-t border-[var(--line)]">
+          <li>
+            <a href="https://github.com/WarcraftXL/wxl-mini-noggit" target="_blank" rel="noopener" class="group flex items-center justify-between gap-6 py-6 border-b border-[var(--line)]">
+              <div>
+                <h3 class="font-display text-xl text-strong font-semibold mb-1 group-hover:text-gold transition-colors">wxl-mini-noggit</h3>
+                <p class="text-muted">An in-client map editor. Pick a doodad, then move, rotate and scale it live with a 3D gizmo.</p>
+              </div>
+              <i data-lucide="arrow-up-right" class="w-5 h-5 text-muted group-hover:text-gold shrink-0 transition-colors"></i>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/WarcraftXL/wxl-unit-outline" target="_blank" rel="noopener" class="group flex items-center justify-between gap-6 py-6 border-b border-[var(--line)]">
+              <div>
+                <h3 class="font-display text-xl text-strong font-semibold mb-1 group-hover:text-gold transition-colors">wxl-unit-outline</h3>
+                <p class="text-muted">A unit outline and highlight effect rendered over the game world.</p>
+              </div>
+              <i data-lucide="arrow-up-right" class="w-5 h-5 text-muted group-hover:text-gold shrink-0 transition-colors"></i>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/WarcraftXL/wxl-no-gluexml" target="_blank" rel="noopener" class="group flex items-center justify-between gap-6 py-6 border-b border-[var(--line)]">
+              <div>
+                <h3 class="font-display text-xl text-strong font-semibold mb-1 group-hover:text-gold transition-colors">wxl-glue-unlock</h3>
+                <p class="text-muted">Unlocks the glue (login) screen for modules that need it.</p>
+              </div>
+              <i data-lucide="arrow-up-right" class="w-5 h-5 text-muted group-hover:text-gold shrink-0 transition-colors"></i>
+            </a>
+          </li>
+        </ul>
+
+        <div class="mt-8">
+          <a href="catalog.html" class="btn btn-ghost">See the full catalog</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="relative overflow-hidden reveal">
+      <div class="max-w-content mx-auto px-5 py-20 flex flex-col md:flex-row md:items-end justify-between gap-8 relative z-10">
+        <div class="max-w-xl">
+          <h2 class="heading-gold text-3xl md:text-4xl font-bold mb-3">Build something into the client</h2>
+          <p class="text-muted text-md">The wiki walks you from a fresh checkout to a running build.</p>
+        </div>
+        <div class="flex flex-wrap gap-3 shrink-0">
+          <a href="docs.html" class="btn btn-gold">Build it</a>
+          <a href="https://github.com/sponsors/iThorgrim" target="_blank" rel="noopener" class="btn btn-ghost">Sponsor</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-[var(--line)] bg-[var(--bg-2)]">
+    <div class="max-w-content mx-auto px-5 py-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="assets/img/logo.png" alt="" class="h-9 w-9" />
+          <div>
+            <p class="font-display font-semibold text-strong">WarcraftXL</p>
+            <p class="text-sm text-muted">Warcraft eXtension Layer</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="docs.html" class="nav-link">Wiki</a>
+          <a href="catalog.html" class="nav-link">Catalog</a>
+          <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        </div>
+      </div>
+
+      <div class="mt-10 pt-8 border-t border-[var(--line)] text-sm text-muted space-y-3 max-w-3xl">
+        <p>
+          <strong class="text-strong">WarcraftXL is an interoperability project.</strong>
+          It distributes no Blizzard code and no game assets, and runs only against a client you supply and own,
+          reading that client's own files at runtime. Reverse-engineering is limited to what is necessary for interoperability.
+        </p>
+        <p>
+          World of Warcraft and Wrath of the Lich King are trademarks of Blizzard Entertainment.
+          This project is not affiliated with or endorsed by Blizzard.
+        </p>
+        <p>Released under the GNU General Public License v3.0. &copy; <span id="year">2026</span> WarcraftXL.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  <script src="assets/js/site.js"></script>
+</body>
+</html>

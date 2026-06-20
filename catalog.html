@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catalog - Modules - WarcraftXL</title>
+  <meta name="description" content="Browse WarcraftXL modules. Discovered live from the GitHub organization and filterable by topic." />
+  <meta name="theme-color" content="#0d0f12" />
+  <link rel="icon" href="assets/img/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { gold: "#d6a258", goldbright: "#ecc079", golddeep: "#a87a3d", bronze: "#a87a3d", ink: "#0d0f12" },
+        fontFamily: { display: ["Space Grotesk", "Inter", "sans-serif"], body: ["Inter", "system-ui", "sans-serif"], mono: ["JetBrains Mono", "monospace"] },
+        maxWidth: { content: "1180px" }
+      } }
+    };
+  </script>
+  <link rel="stylesheet" href="assets/css/site.css" />
+</head>
+<body class="font-body">
+
+  <!-- ===== NAV ===== -->
+  <nav class="site-nav fixed top-0 inset-x-0 z-50">
+    <div class="max-w-content mx-auto px-5 h-16 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <img src="assets/img/logo.png" alt="" class="h-8 w-8" />
+        <span class="font-display font-semibold text-[1.05rem] tracking-tight text-strong">WarcraftXL</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="docs.html" class="nav-link">Wiki</a>
+        <a href="catalog.html" class="nav-link active">Catalog</a>
+        <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="btn btn-ghost !py-2 !px-4">GitHub</a>
+      </div>
+      <button id="nav-burger" class="md:hidden text-muted" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="w-6 h-6"></i></button>
+    </div>
+    <div id="nav-mobile" class="hidden md:hidden border-t border-[var(--line)] px-5 py-4 flex-col gap-3 bg-[var(--surface)]">
+      <a href="index.html" class="nav-link block py-1">Home</a>
+      <a href="docs.html" class="nav-link block py-1">Wiki</a>
+      <a href="catalog.html" class="nav-link active block py-1">Catalog</a>
+      <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link block py-1">GitHub</a>
+    </div>
+  </nav>
+
+  <main class="pt-16">
+    <header class="max-w-content mx-auto px-5 pt-14 pb-8">
+      <p class="eyebrow mb-3">Catalog</p>
+      <h1 class="heading-gold text-4xl md:text-5xl font-bold mb-4">Modules</h1>
+      <p class="text-muted text-md max-w-2xl">
+        Pulled live from GitHub - any public repo tagged
+        <code>wxl-modules</code> / <code>wxl-scripts</code>. Filter by tag or search by name.
+      </p>
+    </header>
+
+    <section class="max-w-content mx-auto px-5 pb-24">
+      <!-- controls -->
+      <div class="panel framed p-5 md:p-6 mb-8">
+        <div class="relative mb-5">
+          <i data-lucide="search" class="w-5 h-5 text-bronze absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="catalog-search" type="search" class="field" placeholder="Search modules by name, description or topic..." autocomplete="off" />
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="eyebrow mr-1">Topics</span>
+          <div id="catalog-chips" class="flex items-center gap-2 flex-wrap">
+            <span class="chip chip-static active">All</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-5">
+        <p id="catalog-count" class="text-muted text-sm">Loading...</p>
+        <a href="https://github.com/topics/wxl-modules" target="_blank" rel="noopener" class="text-gold hover:text-goldbright text-sm inline-flex items-center gap-1">
+          Browse tags on GitHub <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+
+      <!-- status (loading / error / empty) -->
+      <div id="catalog-status" class="hidden mb-6"></div>
+
+      <!-- grid -->
+      <div id="catalog-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+      <p class="text-center text-xs text-muted mt-10">
+        Tag a public repo <code>wxl-modules</code>, <code>wxl-scripts</code> (or the <code>warcraftxl-</code> variants) and it appears here.
+      </p>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-[var(--line)] bg-[var(--bg-2)]">
+    <div class="max-w-content mx-auto px-5 py-12">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex items-center gap-3">
+          <img src="assets/img/logo.png" alt="" class="h-9 w-9" />
+          <div>
+            <p class="font-display font-semibold text-strong">WarcraftXL</p>
+            <p class="text-sm text-muted">Warcraft eXtension Layer</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-6">
+          <a href="index.html" class="nav-link">Home</a>
+          <a href="docs.html" class="nav-link">Wiki</a>
+          <a href="catalog.html" class="nav-link">Catalog</a>
+          <a href="https://github.com/WarcraftXL" target="_blank" rel="noopener" class="nav-link">GitHub</a>
+        </div>
+      </div>
+      <div class="mt-10 pt-8 border-t border-[var(--line)] text-sm text-muted space-y-3 max-w-3xl">
+        <p><strong class="text-strong">WarcraftXL is an interoperability project.</strong> It distributes no Blizzard code and no game assets, and runs only against a client you supply and own, reading that client's own files at runtime. Reverse-engineering is limited to what is necessary for interoperability.</p>
+        <p>World of Warcraft and Wrath of the Lich King are trademarks of Blizzard Entertainment. This project is not affiliated with or endorsed by Blizzard.</p>
+        <p>Released under the GNU General Public License v3.0. &copy; <span id="year">2026</span> WarcraftXL.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/catalog.js"></script>
+</body>
+</html>
